@@ -80,10 +80,6 @@ function createGalleryItem(photo, index) {
     
     item.innerHTML = `
         <img src="${photo.src}" alt="${photo.title}" loading="lazy">
-        <div class="gallery-item-overlay">
-            <h3 class="gallery-item-title">${photo.title}</h3>
-            <p class="gallery-item-date">${photo.date}</p>
-        </div>
     `;
     
     // Handle image load error
