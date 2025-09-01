@@ -11,12 +11,44 @@
 		return lastDot > 0 ? filename.substring(0, lastDot) : filename;
 	}
 
+	// 이미지별 커스텀 제목 정의
+	const customTitles = {
+		'IMG_5751.JPG': 'Street Life',
+		'IMG_5755.JPG': 'Urban Moments',
+		'IMG_5764.JPG': 'City Reflections',
+		'IMG_5814.JPG': 'Daily Beauty',
+		'IMG_5818.JPG': 'Life\'s Details',
+		'IMG_5819.JPG': 'Simple Pleasures',
+		'IMG_5820.JPG': 'Everyday Magic',
+		'IMG_5995.JPG': 'Urban Landscape',
+		'IMG_5996.JPG': 'City Lights',
+		'IMG_5997.JPG': 'Street Photography',
+		'IMG_5998.JPG': 'Urban Geometry',
+		'IMG_5999.JPG': 'City Patterns',
+		'IMG_6017.JPG': 'Street Art',
+		'IMG_6018.JPG': 'Urban Texture',
+		'IMG_6019.JPG': 'City Rhythm',
+		'IMG_6020.JPG': 'Street Stories',
+		'IMG_6021.JPG': 'Urban Moments',
+		'IMG_6022.JPG': 'City Life',
+		'IMG_6023.JPG': 'Street Scenes',
+		'IMG_6024.JPG': 'Urban Beauty',
+		'IMG_6025.JPG': 'City Details',
+		'IMG_6026.JPG': 'Street Views'
+	};
+
 	function toTitleCaseFromFilename(filename) {
+		// 커스텀 제목이 있으면 사용
+		if (customTitles[filename]) {
+			return customTitles[filename];
+		}
+		
 		const base = stripExtension(filename)
+			.replace(/^IMG_\d+$/i, '') // IMG_숫자 패턴 완전 제거
+			.replace(/^IMG\s*/i, '') // 남은 IMG 접두사 제거
 			.replace(/[_-]+/g, ' ')
-			.replace(/^IMG\s*/i, '')
 			.trim();
-		if (!base) return filename;
+		if (!base) return 'Untitled'; // 빈 문자열인 경우 기본값 반환
 		return base.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
 	}
 
@@ -45,7 +77,22 @@
 		'IMG_5814.JPG',
 		'IMG_5818.JPG',
 		'IMG_5819.JPG',
-		'IMG_5820.JPG'
+		'IMG_5820.JPG',
+		'IMG_5995.JPG',
+		'IMG_5996.JPG',
+		'IMG_5997.JPG',
+		'IMG_5998.JPG',
+		'IMG_5999.JPG',
+		'IMG_6017.JPG',
+		'IMG_6018.JPG',
+		'IMG_6019.JPG',
+		'IMG_6020.JPG',
+		'IMG_6021.JPG',
+		'IMG_6022.JPG',
+		'IMG_6023.JPG',
+		'IMG_6024.JPG',
+		'IMG_6025.JPG',
+		'IMG_6026.JPG'
 	];
 
 	function isImageFile(name) {
