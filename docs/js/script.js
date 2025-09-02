@@ -461,23 +461,109 @@ function createAdElement() {
 
 // Initialize Ads after gallery rendering
 function initializeAds() {
-    // Ensure AdSense is loaded and initialize any new ads
-    if (window.adsbygoogle && window.adsbygoogle.loaded) {
+    // Load AdSense script dynamically to avoid preload warnings
+    loadAdSenseScript().then(() => {
+        // Initialize ads after script is loaded
         try {
-            // Initialize ads with error handling
             const ads = document.querySelectorAll('.adsbygoogle');
             ads.forEach(ad => {
                 if (!ad.hasAttribute('data-adsbygoogle-status')) {
                     (window.adsbygoogle = window.adsbygoogle || []).push({});
                 }
             });
+            
+            // Check if ads loaded successfully after a delay
+            setTimeout(() => {
+                checkAdLoadingStatus();
+            }, 3000);
+            
         } catch (e) {
             console.warn('AdSense initialization error:', e);
+            showHeaderAdFallback();
         }
-    }
+    }).catch((error) => {
+        console.warn('Failed to load AdSense script:', error);
+        showHeaderAdFallback();
+    });
 
     // Setup lazy loading for ads that are not immediately visible
     setupAdLazyLoading();
+}
+
+// Dynamically load AdSense script
+function loadAdSenseScript() {
+    return new Promise((resolve, reject) => {
+        // Check if script is already loaded
+        if (window.adsbygoogle && window.adsbygoogle.loaded) {
+            resolve();
+            return;
+        }
+
+        // Check if script element already exists
+        const existingScript = document.querySelector('script[src*="adsbygoogle.js"]');
+        if (existingScript) {
+            // Script exists, wait for it to load
+            existingScript.onload = resolve;
+            existingScript.onerror = reject;
+            return;
+        }
+
+        // Create and load script
+        const script = document.createElement('script');
+        script.async = true;
+        script.crossOrigin = 'anonymous';
+        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8699046198561974';
+        
+        script.onload = () => {
+            console.log('✅ AdSense script loaded successfully');
+            resolve();
+        };
+        
+        script.onerror = () => {
+            console.warn('❌ Failed to load AdSense script');
+            reject(new Error('AdSense script failed to load'));
+        };
+
+        // Add to head
+        document.head.appendChild(script);
+        
+        // Timeout after 10 seconds
+        setTimeout(() => {
+            reject(new Error('AdSense script load timeout'));
+        }, 10000);
+    });
+}
+
+// Check if header ad is loading properly
+function checkAdLoadingStatus() {
+    const headerAd = document.querySelector('.ads-section .adsbygoogle');
+    const fallback = document.getElementById('ad-fallback');
+    
+    if (headerAd && fallback) {
+        const adStatus = headerAd.getAttribute('data-adsbygoogle-status');
+        const hasContent = headerAd.innerHTML.trim() !== '' || headerAd.clientHeight > 50;
+        
+        if (!adStatus || adStatus === 'unfilled' || !hasContent) {
+            console.log('Header ad not loaded properly, showing fallback');
+            showHeaderAdFallback();
+        } else {
+            console.log('Header ad loaded successfully');
+            fallback.style.display = 'none';
+        }
+    }
+}
+
+// Show fallback for header ad
+function showHeaderAdFallback() {
+    const fallback = document.getElementById('ad-fallback');
+    if (fallback) {
+        fallback.innerHTML = `
+            <div style="color:var(--text-secondary); font-size:0.9rem;">📸 Advertisement</div>
+            <div style="color:var(--text-tertiary); font-size:0.8rem; margin-top:5px;">광고를 불러올 수 없습니다</div>
+        `;
+        fallback.style.display = 'block';
+        console.log('Header ad fallback displayed');
+    }
 }
 
 // Setup lazy loading for ads
