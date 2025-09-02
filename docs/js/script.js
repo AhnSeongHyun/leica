@@ -441,7 +441,18 @@ function createAdElement() {
     `;
 
     adContainer.innerHTML = `
-        <div class="gallery-ad-content">
+        <!-- Test Ad for Development -->
+        <div style="padding: 20px; background: #f0f0f0; border: 2px dashed #ccc; text-align: center; width: 100%; max-width: 400px;">
+            <h4 style="color: #666; margin: 0 0 10px 0;">📸 Gallery Advertisement</h4>
+            <p style="color: #999; margin: 0; font-size: 13px;">
+                Test placeholder. Real ads will appear here after deployment.
+            </p>
+            <p style="color: #999; margin: 8px 0 0 0; font-size: 11px;">
+                갤러리 중간 광고 영역
+            </p>
+        </div>
+
+        <div class="gallery-ad-content" style="display: none;">
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8699046198561974"
                  crossorigin="anonymous"></script>
             <ins class="adsbygoogle"
