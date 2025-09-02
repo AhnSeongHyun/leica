@@ -102,6 +102,8 @@ body {
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
+    /* CSS Containment for better performance */
+    contain: layout style;
 }
 
 /* Gallery Grid */
@@ -109,9 +111,16 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 25px;
-    animation: fadeIn 0.8s ease-in;
     /* Prevent layout shift during content loading */
     min-height: 200px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.gallery-grid.rendered {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Gallery Item */
@@ -124,6 +133,10 @@ body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     aspect-ratio: 3/2;
     border: 1px solid var(--border-color);
+    /* Optimize for animations */
+    will-change: transform, box-shadow;
+    /* CSS Containment */
+    contain: layout;
 }
 
 .gallery-item:hover {
@@ -158,6 +171,10 @@ body {
     background-color: var(--overlay-bg);
     z-index: 1000;
     animation: fadeIn 0.3s ease;
+    /* Optimize for animations */
+    will-change: opacity, transform;
+    /* CSS Containment */
+    contain: layout;
 }
 
 .lightbox.active {

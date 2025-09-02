@@ -63,36 +63,58 @@
 	}
 
 	function loadManifest() {
-		return fetch('images/manifest.json', { cache: 'no-store' }).then((res) => {
-			if (!res.ok) throw new Error('manifest not found');
-			return res.json();
+		// 로컬 환경에서는 XMLHttpRequest를 사용하여 CORS 문제를 피함
+		return new Promise((resolve, reject) => {
+			const xhr = new XMLHttpRequest();
+			xhr.open('GET', 'images/manifest.json', true);
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === 4) {
+					if (xhr.status === 200) {
+						try {
+							const data = JSON.parse(xhr.responseText);
+							resolve(data);
+						} catch (e) {
+							console.warn('Failed to parse manifest.json, using fallback:', e);
+							reject(new Error('JSON parse error'));
+						}
+					} else {
+						console.warn('manifest.json not found (status:', xhr.status, '), using fallback');
+						reject(new Error('manifest not found'));
+					}
+				}
+			};
+			xhr.onerror = function() {
+				console.warn('Failed to load manifest.json, using fallback');
+				reject(new Error('manifest not found'));
+			};
+			xhr.send();
 		});
 	}
 
 	// 현재 저장소에 존재하는 파일명을 기준으로 한 폴백
 	const fallbackFiles = [
-		'IMG_5751.JPG',
-		'IMG_5755.JPG',
-		'IMG_5764.JPG',
-		'IMG_5814.JPG',
-		'IMG_5818.JPG',
-		'IMG_5819.JPG',
-		'IMG_5820.JPG',
-		'IMG_5995.JPG',
-		'IMG_5996.JPG',
-		'IMG_5997.JPG',
-		'IMG_5998.JPG',
-		'IMG_5999.JPG',
-		'IMG_6017.JPG',
-		'IMG_6018.JPG',
-		'IMG_6019.JPG',
-		'IMG_6020.JPG',
-		'IMG_6021.JPG',
-		'IMG_6022.JPG',
-		'IMG_6023.JPG',
-		'IMG_6024.JPG',
-		'IMG_6025.JPG',
-		'IMG_6026.JPG'
+		'IMG_5751.webp',
+		'IMG_5755.webp',
+		'IMG_5764.webp',
+		'IMG_5814.webp',
+		'IMG_5818.webp',
+		'IMG_5819.webp',
+		'IMG_5820.webp',
+		'IMG_5995.webp',
+		'IMG_5996.webp',
+		'IMG_5997.webp',
+		'IMG_5998.webp',
+		'IMG_5999.webp',
+		'IMG_6017.webp',
+		'IMG_6018.webp',
+		'IMG_6019.webp',
+		'IMG_6020.webp',
+		'IMG_6021.webp',
+		'IMG_6022.webp',
+		'IMG_6023.webp',
+		'IMG_6024.webp',
+		'IMG_6025.webp',
+		'IMG_6026.webp'
 	];
 
 	function isImageFile(name) {
@@ -100,11 +122,20 @@
 	}
 
 	window.galleryPhotosReady = loadManifest()
-		.catch(() => fallbackFiles)
+		.then((files) => {
+			console.log('✅ manifest.json loaded successfully, found', files.length, 'images');
+			return files;
+		})
+		.catch((error) => {
+			console.log('⚠️ manifest.json not available, using fallback list with', fallbackFiles.length, 'images');
+			console.log('Error details:', error.message);
+			return fallbackFiles;
+		})
 		.then((files) => {
 			const valid = Array.isArray(files) ? files.filter(isImageFile) : [];
 			const photos = valid.map((name, idx) => buildPhotoObject(name, idx));
 			window.galleryPhotos = photos;
+			console.log('📸 Gallery initialized with', photos.length, 'photos');
 			return photos;
 		});
 })();
