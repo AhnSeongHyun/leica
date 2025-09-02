@@ -78,15 +78,32 @@ function createGalleryItem(photo, index) {
     item.className = 'gallery-item';
     item.dataset.index = index;
     
+    // Create placeholder to prevent layout shift
     item.innerHTML = `
-        <img src="${photo.src}" alt="${photo.title}" loading="lazy">
+        <div class="gallery-item-placeholder" style="width: 100%; height: 100%; background-color: var(--gallery-item-bg); display: flex; align-items: center; justify-content: center;">
+            <div style="color: var(--text-tertiary); font-size: 0.9rem;">Loading...</div>
+        </div>
+        <img src="${photo.src}" alt="${photo.title}" loading="lazy" style="position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.3s ease;">
     `;
     
-    // Handle image load error
+    // Handle image load
     const img = item.querySelector('img');
+    const placeholder = item.querySelector('.gallery-item-placeholder');
+    
+    img.onload = function() {
+        this.style.opacity = '1';
+        if (placeholder) {
+            placeholder.style.display = 'none';
+        }
+    };
+    
     img.onerror = function() {
         this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"%3E%3Crect width="400" height="300" fill="%23333"%2F%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="18" fill="%23666"%3EImage not found%3C%2Ftext%3E%3C%2Fsvg%3E';
         this.alt = 'Image not found';
+        this.style.opacity = '1';
+        if (placeholder) {
+            placeholder.style.display = 'none';
+        }
     };
     
     item.addEventListener('click', () => openLightbox(index));
