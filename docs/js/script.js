@@ -64,7 +64,16 @@ function renderGallery() {
     // Shuffle photos randomly each time
     const shuffledPhotos = shuffleArray(photos);
 
-    shuffledPhotos.forEach((photo, index) => {
+    // Render first image immediately for LCP optimization
+    if (shuffledPhotos.length > 0) {
+        const firstPhoto = shuffledPhotos[0];
+        const firstOriginalIndex = photos.findIndex(p => p.src === firstPhoto.src);
+        const firstGalleryItem = createGalleryItem(firstPhoto, firstOriginalIndex);
+        galleryGrid.appendChild(firstGalleryItem);
+    }
+
+    // Render remaining images
+    shuffledPhotos.slice(1).forEach((photo, index) => {
         // Find original index for lightbox navigation
         const originalIndex = photos.findIndex(p => p.src === photo.src);
         const galleryItem = createGalleryItem(photo, originalIndex);
@@ -78,12 +87,17 @@ function createGalleryItem(photo, index) {
     item.className = 'gallery-item';
     item.dataset.index = index;
     
+    // Determine if this is the first image (LCP candidate)
+    const isFirstImage = index === 0;
+    const loadingStrategy = isFirstImage ? 'eager' : 'lazy';
+    const fetchPriority = isFirstImage ? 'high' : 'auto';
+    
     // Create placeholder to prevent layout shift
     item.innerHTML = `
         <div class="gallery-item-placeholder" style="width: 100%; height: 100%; background-color: var(--gallery-item-bg); display: flex; align-items: center; justify-content: center;">
             <div style="color: var(--text-tertiary); font-size: 0.9rem;">Loading...</div>
         </div>
-        <img src="${photo.src}" alt="${photo.title}" loading="lazy" style="position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.3s ease;">
+        <img src="${photo.src}" alt="${photo.title}" loading="${loadingStrategy}" fetchpriority="${fetchPriority}" style="position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.3s ease;">
     `;
     
     // Handle image load
