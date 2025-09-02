@@ -61,6 +61,10 @@
     <link rel="preload" href="js/script.js" as="script">
     <link rel="preload" href="css/styles.css" as="style">
 
+    <!-- Preload AdSense script for better performance -->
+    <link rel="preload" href="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" as="script" crossorigin>
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+
     <!-- Preload critical font -->
     <link rel="preload" href="https://fonts.gstatic.com/s/borel/v1/6qL_KZk8hstQl5xNtoQQ7A.woff2" as="font" type="font/woff2" crossorigin>
 
@@ -204,6 +208,21 @@
             </svg>
         </button>
     </header>
+
+    <!-- AdSense Advertisement -->
+    <section class="ads-section">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8699046198561974"
+             crossorigin="anonymous"></script>
+        <ins class="adsbygoogle"
+             style="display:block; text-align:center;"
+             data-ad-layout="in-article"
+             data-ad-format="fluid"
+             data-ad-client="ca-pub-8699046198561974"
+             data-ad-slot="6646530638"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </section>
 
     <!-- Main Gallery -->
     <main class="gallery-container">

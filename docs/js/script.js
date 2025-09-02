@@ -392,8 +392,18 @@ function renderGallery() {
     // Create DocumentFragment for batch DOM insertion
     const fragment = document.createDocumentFragment();
 
+    // Calculate ad insertion point (around middle of gallery)
+    const totalItems = shuffledPhotos.length;
+    const adInsertionPoint = Math.floor(totalItems / 2); // Insert ad in the middle
+
     // Render all images using fragment
     shuffledPhotos.forEach((photo, index) => {
+        // Insert ad in the middle
+        if (index === adInsertionPoint) {
+            const adElement = createAdElement();
+            fragment.appendChild(adElement);
+        }
+
         // Find original index for lightbox navigation
         const originalIndex = photos.findIndex(p => p.src === photo.src);
         const galleryItem = createGalleryItem(photo, originalIndex);
@@ -407,7 +417,177 @@ function renderGallery() {
 
         // Add fade-in animation class after insertion
         galleryGrid.classList.add('rendered');
+
+        // Initialize ads after gallery is rendered
+        initializeAds();
     });
+}
+
+// Create Ad Element for gallery
+function createAdElement() {
+    const adContainer = document.createElement('div');
+    adContainer.className = 'gallery-ad-item';
+    adContainer.style.cssText = `
+        grid-column: 1 / -1;
+        margin: 30px 0;
+        padding: 20px;
+        background: var(--bg-primary, #ffffff);
+        border-radius: 12px;
+        border: 1px solid var(--border-color, #e0e0e0);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 120px;
+    `;
+
+    adContainer.innerHTML = `
+        <div class="gallery-ad-content">
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8699046198561974"
+                 crossorigin="anonymous"></script>
+            <ins class="adsbygoogle"
+                 style="display:block; text-align:center;"
+                 data-ad-layout="in-article"
+                 data-ad-format="fluid"
+                 data-ad-client="ca-pub-8699046198561974"
+                 data-ad-slot="6646530638"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    `;
+
+    return adContainer;
+}
+
+// Initialize Ads after gallery rendering
+function initializeAds() {
+    // Ensure AdSense is loaded and initialize any new ads
+    if (window.adsbygoogle && window.adsbygoogle.loaded) {
+        try {
+            // Initialize ads with error handling
+            const ads = document.querySelectorAll('.adsbygoogle');
+            ads.forEach(ad => {
+                if (!ad.hasAttribute('data-adsbygoogle-status')) {
+                    (window.adsbygoogle = window.adsbygoogle || []).push({});
+                }
+            });
+        } catch (e) {
+            console.warn('AdSense initialization error:', e);
+        }
+    }
+
+    // Setup lazy loading for ads that are not immediately visible
+    setupAdLazyLoading();
+}
+
+// Setup lazy loading for ads
+function setupAdLazyLoading() {
+    if (!('IntersectionObserver' in window)) {
+        console.warn('Intersection Observer not supported, ads will load immediately');
+        return;
+    }
+
+    const adObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const adContainer = entry.target;
+                const adElement = adContainer.querySelector('.adsbygoogle');
+
+                if (adElement && !adElement.hasAttribute('data-adsbygoogle-status')) {
+                    loadAdWithFallback(adContainer, adElement);
+                }
+
+                // Stop observing once loaded
+                adObserver.unobserve(adContainer);
+            }
+        });
+    }, {
+        root: null,
+        rootMargin: '50px 0px', // Load 50px before ad enters viewport
+        threshold: 0.1
+    });
+
+    // Observe all ad containers
+    const adContainers = document.querySelectorAll('.gallery-ad-item, .ads-section');
+    adContainers.forEach(container => {
+        adObserver.observe(container);
+    });
+}
+
+// Load ad with fallback handling
+function loadAdWithFallback(container, adElement) {
+    const startTime = performance.now();
+
+    try {
+        // Check if AdSense is ready
+        if (!window.adsbygoogle) {
+            console.warn('AdSense not loaded, showing fallback');
+            showAdFallback(container);
+            return;
+        }
+
+        // Load the ad
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+
+        // Monitor ad loading success/failure
+        const checkAdStatus = () => {
+            const loadTime = performance.now() - startTime;
+
+            if (adElement.hasAttribute('data-adsbygoogle-status')) {
+                const status = adElement.getAttribute('data-adsbygoogle-status');
+                console.log(`Ad loaded in ${loadTime.toFixed(2)}ms with status: ${status}`);
+
+                if (status === 'done') {
+                    // Ad loaded successfully
+                    container.classList.add('ad-loaded');
+                } else {
+                    // Ad failed to load
+                    console.warn('Ad failed to load properly');
+                    showAdFallback(container);
+                }
+            } else {
+                // Check again after a short delay
+                setTimeout(checkAdStatus, 100);
+            }
+        };
+
+        // Start monitoring after a brief delay
+        setTimeout(checkAdStatus, 500);
+
+    } catch (e) {
+        console.warn('Ad loading error:', e);
+        showAdFallback(container);
+    }
+}
+
+// Show fallback content when ad fails to load
+function showAdFallback(container) {
+    const loadTime = performance.now();
+
+    // Create fallback content
+    const fallback = document.createElement('div');
+    fallback.className = 'ad-fallback';
+    fallback.innerHTML = `
+        <div style="
+            padding: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+        ">
+            <div style="margin-bottom: 10px;">📸</div>
+            <div>Advertisement</div>
+        </div>
+    `;
+
+    // Replace ad content with fallback
+    container.innerHTML = '';
+    container.appendChild(fallback);
+    container.classList.add('ad-fallback-shown');
+
+    console.log(`Ad fallback shown after ${loadTime.toFixed(2)}ms`);
 }
 
 // Create Gallery Item Element
