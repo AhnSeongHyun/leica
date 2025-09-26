@@ -1,81 +1,81 @@
-# 📷 Images Directory
+# Images Directory
 
-라이카 갤러리에 표시할 사진들을 관리하는 폴더입니다.
+Folder for managing photos to be displayed in the Leica gallery.
 
-## 📁 현재 구조
+## Current Structure
 ```
 images/
-├── manifest.json           # 이미지 목록 (자동 생성되는 파일 아님)
-├── IMG_*.webp             # WebP 변환된 이미지들
-└── README.md              # 이 파일
+├── manifest.json           # Image list (not auto-generated)
+├── IMG_*.webp             # WebP converted images
+└── README.md              # This file
 ```
 
-## 🔄 새 이미지 추가 워크플로우
+## New Image Addition Workflow
 
-### 1단계: 원본 이미지 추가
+### Step 1: Add Original Images
 ```bash
-# JPG 또는 PNG 파일을 이 폴더에 복사
+# Copy JPG or PNG files to this folder
 cp ~/Desktop/IMG_6531.jpg docs/images/
 ```
 
-### 2단계: WebP 변환 (루트 디렉토리에서 실행)
+### Step 2: WebP Conversion (run from root directory)
 ```bash
-# 프로젝트 루트로 이동
+# Navigate to project root
 cd /path/to/leica
 
-# Makefile을 사용해 자동 변환
+# Auto convert using Makefile
 make convert
 
-# 또는 수동 변환
+# Or manual conversion
 cwebp -q 80 docs/images/IMG_6531.jpg -o docs/images/IMG_6531.webp
 ```
 
-### 3단계: manifest.json 업데이트
-`manifest.json` 파일을 편집해서 새 이미지를 배열에 추가:
+### Step 3: Update manifest.json
+Edit the `manifest.json` file to add new images to the array:
 ```json
 [
     "IMG_5751.webp",
     "IMG_5755.webp",
     ...
     "IMG_6530.webp",
-    "IMG_6531.webp"  ← 새로 추가
+    "IMG_6531.webp"  ← newly added
 ]
 ```
 
-### 4단계: Git 커밋
+### Step 4: Git Commit
 ```bash
 git add docs/images/
-git commit -m "📸 Add IMG_6531 to gallery"
+git commit -m "Add IMG_6531 to gallery"
 git push
 ```
 
-## ⚙️ Makefile 명령어 (루트에서 실행)
+## Makefile Commands (run from root)
 
-| 명령어 | 설명 |
-|--------|------|
-| `make convert` | 모든 JPG/PNG를 WebP로 변환 |
-| `make clean` | 생성된 WebP 파일들 삭제 |
-| `make help` | 사용법 도움말 표시 |
+| Command | Description |
+|---------|-------------|
+| `make convert` | Convert all JPG/PNG to WebP |
+| `make clean` | Delete generated WebP files |
+| `make help` | Show usage help |
 
-## 📋 파일 명명 규칙
-- **원본**: `IMG_XXXX.jpg` 또는 `IMG_XXXX.png`
-- **변환후**: `IMG_XXXX.webp`
-- **manifest.json**: 파일명만 저장 (경로 제외)
+## File Naming Convention
+- **Original**: `IMG_XXXX.jpg` or `IMG_XXXX.png`
+- **Converted**: `IMG_XXXX.webp`
+- **manifest.json**: Store filename only (no path)
 
-## 🎯 권장 사항
-- **파일 형식**: JPG, PNG (원본) → WebP (최종)
-- **이미지 크기**: 1920px 이상 권장
-- **WebP 품질**: 80% (Makefile 기본값)
-- **파일 크기**: 변환 후 보통 30-50% 감소
+## Recommendations
+- **File Format**: JPG, PNG (original) → WebP (final)
+- **Image Size**: 1920px or higher recommended
+- **WebP Quality**: 80% (Makefile default)
+- **File Size**: Usually 30-50% reduction after conversion
 
-## 🔍 manifest.json이란?
+## What is manifest.json?
 
-갤러리 JavaScript에서 표시할 이미지 목록을 정의하는 JSON 파일입니다.
-- 배열 형태로 WebP 파일명들을 저장
-- 순서대로 갤러리에 표시됨
-- 새 이미지 추가 시 **반드시 수동으로 업데이트 필요**
+A JSON file that defines the list of images to display in the gallery JavaScript.
+- Stores WebP filenames in array format
+- Images displayed in order
+- **Must be manually updated when adding new images**
 
-## ⚠️ 주의사항
-- 원본 JPG/PNG 파일은 변환 후 삭제하지 마세요 (백업용)
-- manifest.json 업데이트를 잊지 마세요
-- 파일명에 특수문자나 공백 사용 금지
+## Important Notes
+- Do not delete original JPG/PNG files after conversion (for backup)
+- Don't forget to update manifest.json
+- Avoid special characters or spaces in filenames

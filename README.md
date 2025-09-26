@@ -1,20 +1,20 @@
-# Leica Gallery 📸
+# Leica Gallery
 
-라이카 카메라로 촬영한 사진들을 웹에서 감상할 수 있는 갤러리 사이트입니다.
+A web gallery for viewing photos taken with Leica cameras.
 
-🌐 **사이트**: [leica.ash84.io](https://leica.ash84.io)
+**Site**: [leica.ash84.io](https://leica.ash84.io)
 
-## 주요 기능
+## Features
 
-- 📱 반응형 웹 갤러리 
-- 🖼️ WebP 최적화된 이미지 표시
-- 🎨 모던하고 깔끔한 UI
-- ⚡ 빠른 로딩 속도
+- Responsive web gallery
+- WebP optimized image display
+- Modern and clean UI
+- Fast loading speed
 
-## 개발 환경 설정
+## Development Setup
 
-### 필수 도구
-- `cwebp` (WebP 변환용)
+### Required Tools
+- `cwebp` (for WebP conversion)
   ```bash
   # macOS
   brew install webp
@@ -23,69 +23,69 @@
   sudo apt-get install webp
   ```
 
-### 프로젝트 구조
+### Project Structure
 ```
 leica/
-├── docs/                    # GitHub Pages 배포용
-│   ├── images/             # 이미지 파일들
-│   │   ├── manifest.json   # 이미지 목록
-│   │   └── *.webp         # WebP 이미지들
+├── docs/                    # GitHub Pages deployment
+│   ├── images/             # Image files
+│   │   ├── manifest.json   # Image list
+│   │   └── *.webp         # WebP images
 │   ├── css/
 │   ├── js/
 │   └── index.html
-├── Makefile                # 이미지 변환 자동화
+├── Makefile                # Image conversion automation
 └── README.md
 ```
 
-## 사용법
+## Usage
 
-### 새 이미지 추가하기
+### Adding New Images
 
-1. **이미지 파일 준비**
+1. **Prepare Image Files**
    ```bash
-   # docs/images/ 폴더에 JPG/PNG 파일 추가
+   # Add JPG/PNG files to docs/images/ folder
    cp your-photo.jpg docs/images/
    ```
 
-2. **WebP로 변환**
+2. **Convert to WebP**
    ```bash
-   # 모든 JPG/PNG를 WebP로 변환
+   # Convert all JPG/PNG to WebP
    make convert
    ```
 
-3. **manifest.json 업데이트**
+3. **Update manifest.json**
    ```bash
-   # docs/images/manifest.json에 새 파일명 추가
-   # 예: "IMG_6530.webp" 형태로 추가
+   # Add new filename to docs/images/manifest.json
+   # Example: add "IMG_6530.webp" format
    ```
 
-4. **변경사항 커밋**
+4. **Commit Changes**
    ```bash
    git add .
-   git commit -m "📸 Add new images"
+   git commit -m "Add new images"
    git push
    ```
 
-### Makefile 명령어
+### Makefile Commands
 
 ```bash
-make convert    # 모든 JPG/PNG를 WebP로 변환
-make clean      # 생성된 WebP 파일들 삭제  
-make help       # 사용법 도움말 표시
+make convert    # Convert all JPG/PNG to WebP
+make clean      # Delete generated WebP files  
+make help       # Show usage help
 ```
 
-## 배포
+## Deployment
 
-GitHub Pages를 통해 자동 배포됩니다.
-- 메인 브랜치에 푸시하면 자동으로 사이트가 업데이트됩니다.
+Automatically deployed via GitHub Pages.
+- Site updates automatically when pushed to main branch.
 
-## 기술 스택
+## Tech Stack
 
 - **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **이미지 최적화**: WebP (cwebp)
-- **배포**: GitHub Pages
-- **자동화**: Make
+- **Image Optimization**: WebP (cwebp)
+- **Deployment**: GitHub Pages
+- **Automation**: Make
 
 ---
 
-📧 문의: ash84.io
+Contact: ash84.io
