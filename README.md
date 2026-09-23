@@ -1,8 +1,8 @@
-# Leica Gallery
+# Gallery
 
-A web gallery for viewing photos taken with Leica cameras.
+A web gallery for viewing photos.
 
-**Site**: [leica.ash84.io](https://leica.ash84.io)
+**Site**: [gallery.ash84.io](https://gallery.ash84.io)
 
 ## Features
 

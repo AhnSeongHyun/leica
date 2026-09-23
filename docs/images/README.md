@@ -1,6 +1,6 @@
 # Images Directory
 
-Folder for managing photos to be displayed in the Leica gallery.
+Folder for managing photos to be displayed in the gallery.
 
 ## Current Structure
 ```

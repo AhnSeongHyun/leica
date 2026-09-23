@@ -1,7 +1,7 @@
-// Service Worker for Leica Gallery
-const CACHE_NAME = 'leica-gallery-v1.0.0';
-const STATIC_CACHE = 'leica-gallery-static-v1.0.0';
-const IMAGE_CACHE = 'leica-gallery-images-v1.0.0';
+// Service Worker for Gallery
+const CACHE_NAME = 'gallery-v1.0.0';
+const STATIC_CACHE = 'gallery-static-v1.0.0';
+const IMAGE_CACHE = 'gallery-images-v1.0.0';
 
 // Resources to cache immediately
 const STATIC_ASSETS = [
@@ -158,7 +158,7 @@ async function handleDocumentRequest(request) {
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Offline - Leica Gallery</title>
+            <title>Offline - Gallery</title>
             <meta charset="UTF-8">
             <style>
                 body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
